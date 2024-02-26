@@ -1,0 +1,46 @@
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>诗人词云生成</title>
+  </head>
+  <body>
+    <div>
+      <label for="poetName">请输入诗人名称：</label>
+      <input type="text" id="poetName" />
+      <button onclick="generateWordCloud()">生成词云</button>
+    </div>
+   <div>
+  <img id="wordcloudImage" src="" alt="词云图" style="width: 800px; height: 400px;">
+</div>
+
+    <script>
+      function generateWordCloud() {
+        var poetName = document.getElementById('poetName').value;
+
+        // 发起 HTTP 请求调用 Python API
+        fetch('/generate_wordcloud', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ poetName: poetName })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if ('error' in data) {
+            alert(data.error);
+            return;
+          }
+
+          // 显示生成的词云图
+var wordcloudImage = document.getElementById('wordcloudImage');
+wordcloudImage.src = data.imagePath;
+        })
+        .catch(error => {
+          console.error('请求错误:', error);
+        });
+      }
+    </script>
+  </body>
+  </html>
